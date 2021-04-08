@@ -13,3 +13,7 @@ CurrentModule = NCutSegmentation
 ```@autodocs
 Modules = [NCutSegmentation]
 ```
+
+```@doc
+bla(x)
+```
