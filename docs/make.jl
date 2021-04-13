@@ -1,15 +1,25 @@
-using Documenter
 using NCutSegmentation
+using Documenter
 
-makedocs(
-    sitename = "NCutSegmentation",
-    format = Documenter.HTML(),
-    modules = [NCutSegmentation]
+push!(LOAD_PATH, "../src")
+makedocs(;
+    modules=[NCutSegmentation],
+    authors="Luke Ewig <luke.ewig@iob.ch> and contributors",
+    repo="https://github.com/l-ew/NCutSegmentation.jl/blob/{commit}{path}#L{line}",
+    sitename="NCutSegmentation",
+    format=Documenter.HTML(;
+        prettyurls=get(ENV, "CI", nothing) == "true",
+        canonical="https://l-ew.github.io/NCutSegmentation.jl",
+        assets=String[],
+    ),
+    pages=[
+        "Home" => "index.md",
+    ],
 )
 
-# Documenter can also automatically deploy documentation to gh-pages.
-# See "Hosting Documentation" and deploydocs() in the Documenter manual
-# for more information.
-#=deploydocs(
-    repo = "<repository url>"
-)=#
+deploydocs(;
+    branch="gh-pages",
+    devbranch = "main",
+    devurl = "stable",
+    repo="github.com/l-ew/NCutSegmentation.jl.git",
+)
