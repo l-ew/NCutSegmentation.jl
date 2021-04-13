@@ -135,3 +135,5 @@ function ncut(weights::Matrix{Float64}, min_size::Int, max_size::Int, cut_thresh
 
     return labels[1:cut_count, :], cutvals[1:cut_count-1], partition_sizes[1:cut_count-1,:]
 end
+
+end
