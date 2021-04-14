@@ -57,6 +57,7 @@ function ncut(weights::Matrix{Float64}, min_size::Int, max_size::Int, cut_thresh
 
     m = 200
     cutvals = zeros(Float64, m)
+    eigvals = zeros(Float64, m)
     labels = ones(Int32, m, n)
     partition_sizes = zeros(Int, m, 2)
     label = 1
@@ -79,12 +80,16 @@ function ncut(weights::Matrix{Float64}, min_size::Int, max_size::Int, cut_thresh
         if size(W)[1] > 1500
             # use Lanczos algorithm for large graphs
             vals, vecs, info = eigsolve(A, 2, :SR, Float64; issymmetric=true, tol=1e-6, krylovdim=50, maxiter=100, verbosity=0)
-            v = vecs[2]
+            vec = vecs[2]
+            val = vals[2]
         else
-            v = real.(eigvecs(A)[:,2])
+            #vec = real.(eigvecs(A)[:,2])
+            F = eigen(A, sortby=real)
+            vec = real.(F.vectors[:,2])
+            val = real(F.values[2])
         end
 
-        order = sortperm(v)
+        order = sortperm(vec)
         d_sorted = d[order]
         b = cumsum(d_sorted)[1:end-1] ./ cumsum(d_sorted[end:-1:1])[end-1:-1:1]
 
@@ -104,6 +109,7 @@ function ncut(weights::Matrix{Float64}, min_size::Int, max_size::Int, cut_thresh
         end
 
         cutvals[cut_count] = cut
+        eigvals[cut_count] = val
 
         partition1 = vertices[order[1:mincut_index]]   # @ view
         partition2 = vertices[order[mincut_index+1:n_vertices]]
@@ -133,7 +139,7 @@ function ncut(weights::Matrix{Float64}, min_size::Int, max_size::Int, cut_thresh
         end
     end
 
-    return labels[1:cut_count, :], cutvals[1:cut_count-1], partition_sizes[1:cut_count-1,:]
+    return labels[1:cut_count, :], cutvals[1:cut_count-1], eigvals[1:cut_count-1], partition_sizes[1:cut_count-1,:]
 end
 
 end
